@@ -1,0 +1,30 @@
+import sys
+import smbus2 as smbus
+import time
+import RPi.GPIO as GPIO
+import time
+import requests
+
+address = 0x8
+bus = smbus.SMBus(1)
+
+def main():
+    data = False
+    while True:
+        East_data = bus.read_byte(address)
+        if (East_data > 160):
+            r = requests.post('https://maker.ifttt.com/trigger/Noisy_neighbors_east/with/key/FOZJbJNj3o3JsskjS9cfc')
+        print(f'East side house: {East_data}\n')
+        time.sleep(1)
+        West_data = bus.read_byte(address)
+        if (West_data > 160):
+            r = requests.post('https://maker.ifttt.com/trigger/Noisy_neighbors_west/with/key/FOZJbJNj3o3JsskjS9cfc')
+        print(f'West side house: {West_data}\n')
+        time.sleep(1)
+        
+
+if __name__ == '__main__':
+    try:
+        main()
+    except KeyboardInterrupt:
+        sys.exit(0)
